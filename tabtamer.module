@@ -182,7 +182,7 @@ function _tabtamer_convert_to_single_array(&$tabs, $tabs_source, $last_default_p
 
   // If there is a MENU_DEFAULT_LOCAL_TASK at this level then set $last_default_path.
   foreach ($tabs_source as $key => $val) {
-    if (is_array($val) && $val['type'] == MENU_DEFAULT_LOCAL_TASK) {
+    if (is_array($val) && ($val['type'] == MENU_DEFAULT_LOCAL_TASK || empty($val['type']))) {
       $last_default_path = $current_path;
       break;
     }
