@@ -79,13 +79,16 @@ function tabtamer_menu_alter(&$items) {
   
   $tabs = variable_get('tabtamer_tab_settings', array());
   foreach ($tabs as $path => $val) {
-    $items[$val['tabtamer_original_path']]['weight'] = $val['weight'];
-    if ($val['action'] == 'hidden') {
-      $items[$val['tabtamer_original_path']]['type'] = MENU_CALLBACK;
-    }
-    elseif ($val['action'] == 'disabled') {
-      unset($items[$val['tabtamer_original_path']]);
-    }
+    // Only set the attributes if the menu router item exists.
+    if (!empty($items[$val['tabtamer_original_path']])) {
+      $items[$val['tabtamer_original_path']]['weight'] = $val['weight'];
+      if ($val['action'] == 'hidden') {
+        $items[$val['tabtamer_original_path']]['type'] = MENU_CALLBACK;
+      }
+      elseif ($val['action'] == 'disabled') {
+        unset($items[$val['tabtamer_original_path']]);
+      }
+    } 
   }
 }
 
