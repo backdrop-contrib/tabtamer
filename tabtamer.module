@@ -76,7 +76,7 @@ function tabtamer_menu_alter(&$items) {
   // We will be altering the $items variable, so we create a backup in case we need
   // to see the original state of the $items array.
   _tabtamer_backup($items);
-  
+
   $tabs = variable_get('tabtamer_tab_settings', array());
   foreach ($tabs as $path => $val) {
     // Only set the attributes if the menu router item exists.
@@ -91,6 +91,13 @@ function tabtamer_menu_alter(&$items) {
       else {
         if (!empty($val['tabtamer_title'])) {
           $items[$val['tabtamer_original_path']]['title'] = $val['tabtamer_title'];
+          // we are providing a title, so remove any title callback and arguments
+          if (isset($items[$val['tabtamer_original_path']]['title callback'])) {
+            unset($items[$val['tabtamer_original_path']]['title callback']);
+          }
+          if (isset($items[$val['tabtamer_original_path']]['title arguments'])) {
+            unset($items[$val['tabtamer_original_path']]['title arguments']);
+          }
         }
       }
     }
