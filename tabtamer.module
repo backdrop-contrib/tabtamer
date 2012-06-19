@@ -21,6 +21,17 @@ function tabtamer_theme($existing, $type, $theme, $path) {
 }
 
 /**
+ * Implementation of hook_help();
+ */
+function tabtamer_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#tabtamer":
+      return t('Tab Tamer lets you hide, disable and re-order all Drupal menu tabs. After making changes, you must Clear all caches under Performance in order to reflect your changes. By default the administrative tabs are not shown. You can enable this feature under the Settings tab. As the Tab Tamer list is cached, you need to Clear all caches when disabling or enabling this feature in order to reflect your choice.');
+      break;
+  }
+}
+
+/**
  * Implements hook_menu().
  */
 function tabtamer_menu() {
@@ -28,6 +39,7 @@ function tabtamer_menu() {
 
   $items['admin/config/system/tabtamer'] = array(
     'title' => 'Tab Tamer',
+    'description' => 'Tab Tamer lets you hide, disable and re-order all Drupal menu tabs.',
     'access arguments' => array('administer tabtamer'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('tabtamer_tabs_form'),
