@@ -103,11 +103,14 @@ function _tabtamer_convert_to_single_array(&$tabs, $tabs_source, $last_default_p
     return;
   }
 
-  // If there is a MENU_DEFAULT_LOCAL_TASK at this level then set $last_default_path.
+  // If there is a MENU_DEFAULT_LOCAL_TASK or this is the only item at this level then set $last_default_path.
   foreach ($tabs_source as $key => $val) {
-    if (is_array($val) && isset($val['type']) && ($val['type'] == MENU_DEFAULT_LOCAL_TASK || empty($val['type']))) {
-      $last_default_path = $current_path;
-      break;
+    if (is_array($val)) {
+      if (empty($val['type']) || $val['type'] == MENU_DEFAULT_LOCAL_TASK ||
+        ($last_default_path == '' && $val['type'] == MENU_LOCAL_TASK)) {
+        $last_default_path = $current_path;
+        break;
+      }
     }
   }
 
@@ -139,13 +142,6 @@ function _tabtamer_true_base($path) {
     }
   }
   return implode('/', $parts);
-}
-
-/**
- * Implements hook_theme().
- */
-function tabtamer_theme($existing, $type, $theme, $path) {
-  return array('tabtamer_tabs_form' => array('render element' => 'form'));
 }
 
 /**
