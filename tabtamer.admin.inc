@@ -18,8 +18,8 @@ function tabtamer_admin($form, &$form_state) {
   $form['tabtamer_control_admin'] = array(
     '#type' => 'checkbox',
     '#title' => t('Control Administration Tabs'),
-    '#default_value' => variable_get('tabtamer_control_admin', 0),
-    '#description' => t('Most of the tabs in Drupal are found in the administration pages, an area which the average user will not access. Because of this, and to keep the interface as simple as possible, administration page tabs are not processed by default. You can override the default behavior by enabling this option. When disabling this option, you need to clear the Drupal caches to reflect the change.'),
+    '#default_value' => config_get('tabtamer.settings', 'control_admin'),
+    '#description' => t('Most of the tabs in Backdrop are found in the administration pages, an area which the average user will not access. Because of this, and to keep the interface as simple as possible, administration page tabs are not processed by default. You can override the default behavior by enabling this option. When disabling this option, you need to clear the Backdrop caches to reflect the change.'),
   );
 
   return system_settings_form($form);
@@ -70,6 +70,7 @@ function _tabtamer_tabs($reset = FALSE) {
   $tabs = array();
   _tabtamer_convert_to_single_array($tabs, $structured_tabs);
   cache_set(TABTAMER_CACHE_ID, $tabs, TABTAMER_CACHE_TABLE, CACHE_TEMPORARY);
+  dpm($tabs);
   return $tabs;
 }
 
@@ -99,7 +100,7 @@ function _tabtamer_create_tab_structure(&$tabs, $key, $addition, $original) {
  * $current_path - Keeping up with the current path.
  */
 function _tabtamer_convert_to_single_array(&$tabs, $tabs_source, $last_default_path = '', $current_path = '') {
-  if ($current_path == 'admin' && !variable_get('tabtamer_control_admin', 0)) {
+  if ($current_path == 'admin' && !config_get('tabtamer.settings', 'control_admin')) {
     return;
   }
 
@@ -182,10 +183,10 @@ function theme_tabtamer_tabs_form($variables) {
       ),
     );
     $form[$base]['#description'] .= theme('table', $table);
-    drupal_add_tabledrag($id, 'order', 'sibling', 'tabtamer-weight');
+    backdrop_add_tabledrag($id, 'order', 'sibling', 'tabtamer-weight');
   }
 
-  $output .= drupal_render_children($form);
+  $output .= backdrop_render_children($form);
   return $output;
 
 }
@@ -197,7 +198,7 @@ function tabtamer_tabs_form($form, &$form_state) {
   $form = array();
 
   $form['#tree'] = TRUE;
-  $settings = variable_get('tabtamer_tab_settings', array());
+  $settings = config_get('tabtamer.settings', 'tab_settings');
   $tabs = _tabtamer_tabs();
 
 
@@ -267,7 +268,7 @@ function tabtamer_tabs_form($form, &$form_state) {
 }
 
 /**
- * Helper function used to determine the order that tabs appear in Drupal.
+ * Helper function used to determine the order that tabs appear in Backdrop.
  */
 function _tabtamer_sort($a, $b) {
   $return = '';
@@ -287,8 +288,8 @@ function _tabtamer_sort($a, $b) {
  */
 function tabtamer_tabs_form_submit($form_id, $form_values) {
   if ($form_values['clicked_button']['#value'] == t('Reset to Defaults')) {
-    variable_set('tabtamer_tab_settings', array());
-    drupal_set_message(t('All tabs have been reset.'));
+    config_set('tabtamer.settings', 'tab_settings', array());
+    backdrop_set_message(t('All tabs have been reset.'));
   }
   else {
     $tabs = _tabtamer_tabs();
@@ -303,9 +304,9 @@ function tabtamer_tabs_form_submit($form_id, $form_values) {
         );
       }
     }
-    variable_set('tabtamer_tab_settings', $settings);
-    drupal_set_message(t('Your changes have been saved.'));
+    config_set('tabtamer.settings', 'tab_settings', $settings);
+    backdrop_set_message(t('Your changes have been saved.'));
   }
   _tabtamer_tabs(true);
-  drupal_set_message(t('You may need to clear your cache in order for these changes to take effect.'));
+  backdrop_set_message(t('You may need to clear your cache in order for these changes to take effect.'));
 }

@@ -20,8 +20,17 @@ function tabtamer_install() {
 }
 
 /**
- * Implements hook_uninstall().
+ * Convert devel settings to config.
  */
-function tabtamer_uninstall() {
-  variable_del('tabtamer_tab_settings');
+function tabtamer_update_1000() {
+  $config = config('tabtamer.settings');
+
+  // SQL Query display.
+  $config->set('tab_settings', update_variable_get('tabtamer_tab_settings', array()));
+  $config->set('control_admin', update_variable_get('tabtamer_control_admin', 0));
+
+  update_variable_del('tabtamer_tab_settings');
+  update_variable_del('tabtamer_control_admin');
+
+  $config->save();
 }

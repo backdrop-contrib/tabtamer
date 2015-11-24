@@ -1,7 +1,5 @@
 name = Tab Tamer
 description = Gives additional control over what tabs are seen by a user.
-package = Other
-core = 7.x
-files[] = tabtamer.install
-files[] = tabtamer.module
+backdrop = 1.x
+type = module
 configure = admin/config/system/tabtamer
