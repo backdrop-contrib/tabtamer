@@ -22,7 +22,20 @@ function tabtamer_admin($form, &$form_state) {
     '#description' => t('Most of the tabs in Backdrop are found in the administration pages, an area which the average user will not access. Because of this, and to keep the interface as simple as possible, administration page tabs are not processed by default. You can override the default behavior by enabling this option. When disabling this option, you need to clear the Backdrop caches to reflect the change.'),
   );
 
-  return system_settings_form($form);
+  $form['actions']['#type'] = 'actions';
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save configuration'),
+  );
+
+  return $form;
+}
+
+function tabtamer_admin_submit($form, &$form_state) {
+  $config = config('tabtamer.settings');
+  $config->set('tabtamer_control_admin', $form_state['values']['tabtamer_control_admin']);
+  $config->save();
+  backdrop_set_message(t('The configuration options have been saved.'));
 }
 
 /**
