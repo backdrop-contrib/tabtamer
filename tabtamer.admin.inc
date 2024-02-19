@@ -83,7 +83,6 @@ function _tabtamer_tabs($reset = FALSE) {
   $tabs = array();
   _tabtamer_convert_to_single_array($tabs, $structured_tabs);
   cache_set(TABTAMER_CACHE_ID, $tabs, TABTAMER_CACHE_TABLE, CACHE_TEMPORARY);
-  dpm($tabs);
   return $tabs;
 }
 
